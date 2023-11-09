@@ -14,6 +14,11 @@ struct ContentView: View {
     @State private var showingScore = false
     @State private var scoreTitle = ""
     
+    @State private var score = 0
+    @State private var questionsAnswered = 0
+    
+    @State private var gameIsOver = false
+    
     
     var body: some View {
         ZStack {
@@ -54,7 +59,7 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
 
-                Text("Score: ???")
+                Text("Score: \(score)")
                     .foregroundStyle(.white)
                     .font(.title.bold())
 
@@ -65,16 +70,29 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion)
         } message: {
-            Text("Your score is ???")
+            Text("Your score is \(score)")
         }
+        .alert("GAME OVER!", isPresented: $gameIsOver) {
+                Button("Restart", action: restart)
+            } message: {
+                Text("Your final score is \(score)")
+            }
     }
     
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
+            score += 1
+            questionsAnswered += 1
             scoreTitle = "Correct"
         } else {
-            scoreTitle = "Wrong"
+            questionsAnswered += 1
+            scoreTitle = "Wrong! That’s the flag of \(countries[number])"
         }
+        
+        if questionsAnswered == 5 {
+            gameIsOver = true
+        }
+        
         
         showingScore = true
     }
@@ -82,6 +100,19 @@ struct ContentView: View {
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    
+    func restart() {
+        countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
+        correctAnswer = Int.random(in: 0...2)
+        
+        showingScore = false
+        scoreTitle = ""
+        
+        score = 0
+        questionsAnswered = 0
+        
+        gameIsOver = false
     }
 }
 
