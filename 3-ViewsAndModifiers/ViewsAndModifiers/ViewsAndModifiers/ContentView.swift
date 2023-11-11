@@ -7,6 +7,25 @@
 
 import SwiftUI
 
+struct BlueTitle: ViewModifier {
+    
+    func body(content: Content) -> some View {
+        ZStack(alignment: .bottomTrailing) {
+            content
+                .font(.title)
+                .bold()
+                .foregroundStyle(.blue)
+                .padding(5)
+        }
+    }
+}
+
+extension View {
+    func bluetitled() -> some View {
+        modifier(BlueTitle())
+    }
+}
+
 struct ContentView: View {
     var body: some View {
         VStack {
@@ -14,8 +33,11 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
             Text("Hello, world!")
+            Text("Hello, everyone!")
+                
         }
         .padding()
+        .bluetitled()
     }
 }
 
